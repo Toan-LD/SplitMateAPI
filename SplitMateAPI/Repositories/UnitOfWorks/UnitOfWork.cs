@@ -1,16 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SplitMateAPI.Data;
+using SplitMateAPI.Repositories.UserRepositories;
 
-namespace SplitMateAPI.Repositories.UnitOfWork
+namespace SplitMateAPI.Repositories.UnitOfWorks
 {
 	public class UnitOfWork : IUnitOfWork
 	{
 		private readonly ApplicationDbContext _context;
+		private readonly RepositoryContainer _repositories;
 
-		public UnitOfWork(ApplicationDbContext context)
+		public UnitOfWork(ApplicationDbContext context, RepositoryContainer repositories)
 		{
 			_context = context;
+			_repositories = repositories;
 		}
+
+		public IUserRepository Users => _repositories.UserRepository;
 
 		public void Detach(object entity)
 		{

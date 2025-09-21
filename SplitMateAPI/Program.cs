@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Resend;
 using SplitMateAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddOptions();
+builder.Services.AddHttpClient<ResendClient>();
+builder.Services.Configure<ResendClientOptions>(o =>
+{
+    o.ApiToken = Environment.GetEnvironmentVariable("Resend:ApiKey")!;
+});
+builder.Services.AddTransient<IResend, ResendClient>();
+
+builder.Services.AddTransient<SplitMateAPI.Services.EmailServices.IEmailService, SplitMateAPI.Services.EmailServices.EmailService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
